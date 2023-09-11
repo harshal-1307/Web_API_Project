@@ -1,0 +1,140 @@
+--alter table Information_Data drop column hidden_value;
+
+select * from  userData;
+
+create table userData(
+uemail varchar2(50),
+upassword varchar2(50),
+uhiddenvalue varchar2 (50)
+);
+
+create table Information_Data(
+F_id NUMBER (20),
+F_name varchar2 (50),
+F_price NUMBER (20),
+F_desc varchar2(50)
+);
+
+alter table h_value_data add h_id number;
+
+select * from userData;
+
+create table h_value_data(
+h_value varchar2(20)
+);
+
+select Information_data.F_name ,userData.uemail ,Information_data.F_DESC ,Information_data.F_ID ,h_value_data.H_ID ,h_value_data.h_value
+from Information_data, h_value_data ,userData
+where Information_data.F_ID=h_value_data.H_ID and h_value_data.h_value = userData.uemail ;
+
+--Getting Order Data Procedure .
+create or replace procedure Sp_Match_order_Data(
+p_output OUT SYS_REFCURSOR 
+)
+AS 
+begin 
+ open p_output for 
+select Information_data.F_name ,userData.uemail ,Information_data.F_DESC ,Information_data.F_ID ,h_value_data.H_ID ,h_value_data.h_value
+from Information_data, h_value_data ,userData
+where Information_data.F_ID=h_value_data.H_ID and h_value_data.h_value = userData.uemail ;
+commit;
+END Sp_Match_order_Data;
+--Getting Order Data Procedure .
+
+select * from h_value_data;
+
+-- Passing hiddenValue.
+create or replace procedure SP_HiddenValue(
+s_value varchar2,
+s_id number
+)
+AS
+begin
+insert into h_value_data(h_value ,h_id) values (s_value,s_id); 
+commit;
+END SP_HiddenValue;
+-- Passing hiddenValue.
+
+
+--Product Details Procedure.
+create or replace procedure SP_Information_Data(
+I_id int,
+I_name varchar2,
+I_price int,
+I_desc varchar2
+)
+AS 
+begin
+insert into Information_Data(F_id , F_name,F_price ,F_desc) values(I_id,I_name,I_price,I_desc);
+commit;
+END SP_Information_Data;
+--Product Details Procedure.
+
+
+-- user Data with hidden Value.
+create or replace procedure SP_USER_DATE(
+p_email VARCHAR2,
+P_password  VARCHAR2,
+P_hiddenValue int
+)
+AS 
+begin 
+insert into userData(
+uemail , upassword ,uhiddenvalue
+)
+values
+(
+P_email,P_password ,P_hiddenValue
+);
+commit;
+END SP_USER_DATE;
+-- user Data with hidden Value.
+
+
+begin
+  SP_Information_Data(3,'punjabi Food',200,'Order delicious food and enjoy every day.');
+  SP_Information_Data(4,'North Indian Food' ,400,'Order delicious food and enjoy every day.');
+End ;  
+
+delete from Information_Data where F_id = 4;
+
+begin 
+  SP_USER_DATE('jayesh@gmail.com','jayesh',5);
+End; 
+
+select * from userData;
+
+--Get userData table Procedure.
+create or replace procedure SP_Get_Data(p_curosr OUT SYS_REFCURSOR)
+AS
+begin
+  OPEN p_curosr for select * from userData;
+end SP_Get_Data;
+--Get userData table Procedure.
+
+
+--Get Information_Data table Procedure.
+create or replace procedure SP_Get_Order_Data( 
+O_id number,
+p_curosr OUT SYS_REFCURSOR 
+)
+AS
+begin
+  OPEN p_curosr for select F_name ,F_price ,F_desc from Information_Data where F_id=O_id;
+end SP_Get_Order_Data;
+--Get Information_Data table Procedure.
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
